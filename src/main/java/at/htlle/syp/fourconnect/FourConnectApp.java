@@ -2,6 +2,8 @@ package at.htlle.syp.fourconnect;
 
 import java.util.Arrays;
 
+//(c) group4 Urschinger, Wernig, Schieder, Ranninger;
+
 public class FourConnectApp {
     public static final int ROWS = 7;
     public static final int COLUMNS = 7;

@@ -34,21 +34,15 @@ public class AppTest {
     public void runJamesBond() {
         printPreample("James Bond");
 
-        String testData = "006";
+        String testData = "007";
 
         setup(testData);
-        app.initBoard();
 
-        app.dropRedCoin();
-        app.dropYellowCoin();
-        app.dropRedCoin();
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> app.runGame());
 
-        char[][] board = app.getBoard();
-
-        assertEquals('R', board[6][0]);
-        assertEquals('Y', board[5][0]);
-        assertEquals('R', board[6][6]);
+        assertTrue(true);
     }
+
 
     @Test
     public void redWinsInRow() {

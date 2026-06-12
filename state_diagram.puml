@@ -1,0 +1,101 @@
+@startuml FourConnect_State_Diagram
+
+skinparam state {
+    BackgroundColor LightGray
+    BorderColor DarkGray
+    FontName Arial
+    ArrowColor DarkGray
+    StartColor Black
+    EndColor Black
+}
+
+skinparam backgroundColor White
+skinparam shadowing false
+
+[*] --> Initialisierung : start
+
+state Initialisierung {
+    [*] --> [*] : initBoard()\nisRedTurn = true\nBrett leeren (7×7)
+}
+
+Initialisierung --> BrettAnzeigen : Brett initialisiert
+
+state BrettAnzeigen {
+    [*] --> [*] : printBoard()
+}
+
+BrettAnzeigen --> PruefeSpielende
+
+state PruefeSpielende <<choice>>
+
+PruefeSpielende --> SpielerWaehlen    : winner == null\n&& count < ROWS*COLUMNS
+PruefeSpielende --> GewinnerErmitteln : winner != null\noder count == ROWS*COLUMNS
+
+state SpielerWaehlen <<choice>>
+
+SpielerWaehlen --> RotWirft   : isRedTurn == true
+SpielerWaehlen --> GelbWirft  : isRedTurn == false
+
+state RotWirft {
+    [*] --> [*] : dropRedCoin()\nSpalte einlesen\n'R' setzen
+}
+
+note right of RotWirft
+  Test: runJamesBond()
+end note
+
+state GelbWirft {
+    [*] --> [*] : dropYellowCoin()\nSpalte einlesen\n'Y' setzen
+}
+
+note right of GelbWirft
+  Test: runJamesBond()
+end note
+
+RotWirft  --> SpielerWechseln
+GelbWirft --> SpielerWechseln
+
+state SpielerWechseln {
+    [*] --> [*] : switchCoin()\nisRedTurn = !isRedTurn\ncount++
+}
+
+SpielerWechseln --> BrettAnzeigen : Nächste Runde
+
+state GewinnerErmitteln {
+    [*] --> [*] : checkWinner()\nhorizontal / vertikal\ndiagonal ↘ / diagonal ↗
+}
+
+note right of GewinnerErmitteln
+  Test: redWinsInRow()
+  Test: redWinsInColumn()
+  Test: redWinsInLeftToRightDown()
+  Test: redWinsInLeftUpToRight()
+  Test: yellowWinsInRow()
+  Test: yellowWinsInColumn()
+end note
+
+GewinnerErmitteln --> RotGewinnt    : winner == 'R'
+GewinnerErmitteln --> GelbGewinnt   : winner == 'Y'
+GewinnerErmitteln --> Unentschieden : winner == null\n&& count == ROWS*COLUMNS
+
+state RotGewinnt {
+    [*] --> [*] : "The red player won."
+}
+
+state GelbGewinnt {
+    [*] --> [*] : "The yellow player won."
+}
+
+state Unentschieden {
+    [*] --> [*] : "It's a draw!"
+}
+
+note right of Unentschieden
+  Test: fillWholeBoard()
+end note
+
+RotGewinnt    --> [*]
+GelbGewinnt   --> [*]
+Unentschieden --> [*]
+
+@enduml
