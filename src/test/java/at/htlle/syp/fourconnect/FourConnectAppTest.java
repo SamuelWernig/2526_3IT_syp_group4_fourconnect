@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AppTest {
+public class FourConnectAppTest {
     private FourConnectApp app;
 
     public void setup(String testData) {

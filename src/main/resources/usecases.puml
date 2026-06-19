@@ -1,0 +1,35 @@
+@startuml FourConnect_UseCases
+
+skinparam actorStyle awesome
+skinparam backgroundColor White
+skinparam shadowing false
+
+left to right direction
+
+actor "Spieler Rot" as Red
+actor "Spieler Gelb" as Yellow
+actor "System" as System
+
+rectangle FourConnect {
+    usecase "UC-01\nSpiel starten" as UC01
+    usecase "UC-02\nMünze einwerfen" as UC02
+    usecase "UC-03\nGewinner ermitteln" as UC03
+    usecase "UC-04\nUnentschieden" as UC04
+    usecase "UC-05\nSpieler wechseln" as UC05
+    usecase "UC-06\nUngültige Spalte\n(Spiel abbrechen)" as UC06
+}
+
+Red    --> UC01
+Red    --> UC02
+Yellow --> UC02
+
+UC02 --> UC06 : <<extend>>
+UC02 --> UC03 : <<include>>
+UC02 --> UC05 : <<include>>
+UC03 --> UC04 : <<extend>>
+
+System --> UC03
+System --> UC04
+System --> UC05
+
+@enduml
