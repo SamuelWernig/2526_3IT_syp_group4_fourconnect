@@ -12,90 +12,41 @@ skinparam state {
 skinparam backgroundColor White
 skinparam shadowing false
 
-[*] --> Initialisierung : start
+[*] --> Initialisierung
 
 state Initialisierung {
-    [*] --> [*] : initBoard()\nisRedTurn = true\nBrett leeren (7×7)
+    [*] --> [*] : initBoard()\nisRedTurn = true
 }
 
-Initialisierung --> BrettAnzeigen : Brett initialisiert
+Initialisierung --> AmZug
 
-state BrettAnzeigen {
-    [*] --> [*] : printBoard()
+state AmZug {
+    [*] --> [*] : Spalte einlesen\nMünze setzen\nswitchCoin()
 }
 
-BrettAnzeigen --> PruefeSpielende
-
-state PruefeSpielende <<choice>>
-
-PruefeSpielende --> SpielerWaehlen    : winner == null\n&& count < ROWS*COLUMNS
-PruefeSpielende --> GewinnerErmitteln : winner != null\noder count == ROWS*COLUMNS
-
-state SpielerWaehlen <<choice>>
-
-SpielerWaehlen --> RotWirft   : isRedTurn == true
-SpielerWaehlen --> GelbWirft  : isRedTurn == false
-
-state RotWirft {
-    [*] --> [*] : dropRedCoin()\nSpalte einlesen\n'R' setzen
-}
-
-note right of RotWirft
+note right of AmZug
   Test: runJamesBond()
+  [IllegalArgumentException\nbei Spalte < 0 oder > 6]
 end note
 
-state GelbWirft {
-    [*] --> [*] : dropYellowCoin()\nSpalte einlesen\n'Y' setzen
+AmZug --> AmZug      : winner == null\n&& count < 49
+
+AmZug --> Spielende  : winner != null\noder count == 49
+
+state Spielende {
+    [*] --> [*] : Ergebnis ausgeben
 }
 
-note right of GelbWirft
-  Test: runJamesBond()
-end note
-
-RotWirft  --> SpielerWechseln
-GelbWirft --> SpielerWechseln
-
-state SpielerWechseln {
-    [*] --> [*] : switchCoin()\nisRedTurn = !isRedTurn\ncount++
-}
-
-SpielerWechseln --> BrettAnzeigen : Nächste Runde
-
-state GewinnerErmitteln {
-    [*] --> [*] : checkWinner()\nhorizontal / vertikal\ndiagonal ↘ / diagonal ↗
-}
-
-note right of GewinnerErmitteln
+note right of Spielende
   Test: redWinsInRow()
   Test: redWinsInColumn()
   Test: redWinsInLeftToRightDown()
   Test: redWinsInLeftUpToRight()
   Test: yellowWinsInRow()
   Test: yellowWinsInColumn()
-end note
-
-GewinnerErmitteln --> RotGewinnt    : winner == 'R'
-GewinnerErmitteln --> GelbGewinnt   : winner == 'Y'
-GewinnerErmitteln --> Unentschieden : winner == null\n&& count == ROWS*COLUMNS
-
-state RotGewinnt {
-    [*] --> [*] : "The red player won."
-}
-
-state GelbGewinnt {
-    [*] --> [*] : "The yellow player won."
-}
-
-state Unentschieden {
-    [*] --> [*] : "It's a draw!"
-}
-
-note right of Unentschieden
   Test: fillWholeBoard()
 end note
 
-RotGewinnt    --> [*]
-GelbGewinnt   --> [*]
-Unentschieden --> [*]
+Spielende --> [*]
 
 @enduml
